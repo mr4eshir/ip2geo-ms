@@ -1,13 +1,20 @@
-var express = require('express');
+// import { decoder } from './decoders/abstract';
+import { decoder } from './decoders/freegeoip';
+let express = require('express');
 
-var app = express();
+let app = express();
 
 app.get('/ip2geo', function(req, res) {
-  res.send({ip: req.query.ip,
-  lon: '0.0',
-  lat: '0.0',
-  city: 'Moscow',
-  country: 'Russia'});
+  let data = decoder.translate(req.query.ip);
+  console.log(data);
+  data.then((resolve) => {
+    console.log(resolve);
+    res.send(resolve);
+  })
+  .catch((reject) => {
+    console.log(reject);
+    res.send(reject)
+  });
 });
 app.get('/', function(req, res) {
   res.redirect('/ip2geo');
